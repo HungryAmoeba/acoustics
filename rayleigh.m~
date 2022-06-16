@@ -1,0 +1,6 @@
+function R = rayleigh_1(m,n,theta,theta_1)
+
+%This function calculates the reflection coefficient 
+%given index of refraction n = k1/k = c/c1 and 
+%m=
+end
