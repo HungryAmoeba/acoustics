@@ -18,8 +18,8 @@ m_arr = zeros(num_layers - 1,1); n_arr = zeros(num_layers - 1,1);
 R_nat_arr = zeros(num_layers - 1, 1);
 k_arr = freq./c;
 
-theta_arr = zeros(num_layers-1)
-theta_arr(1) = theta
+theta_arr = zeros(num_layers-1);
+theta_arr(1) = theta;
 
 for i = 2:num_layers-1
     theta_arr(i) = asin(k_arr(i-1) * sin(theta_arr(i-1)) /k_arr(i));
