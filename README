@@ -1,1 +1,11 @@
 Scripts to calculate refraction coefficients for underwater acoustics data
+
+Driver code is in reflection.m. The function for calculating R for an arbitrarily stratified medium is provided in rayleigh_strat.m
+
+Figures 1-3 correspond to the reflection coefficients for the water-bottom interface models described in Frisk
+
+Figures 4-10 show the behavior of |R| for a horizontally stratified medium with 5 layers. Exact paramteres for each layer are given in the code
+
+Figures 11-15 are an attempt to reproduce the figures on page 49 of COA.
+Figure 15 is the result of applying a fourier transform to |R| as a function of frequency for the fixed incidence angle of 53 degrees. 
+

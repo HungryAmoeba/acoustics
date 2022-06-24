@@ -1,5 +1,8 @@
 %% 
 % n = k1/k = c/c1, m = rho_1/rho
+
+% all angles are incident angles (follow Frisks' convention, where 0 is
+% normal incident and pi/2 is horizontal)
 clear all;
  
 close all;
@@ -82,31 +85,31 @@ ylabel('|R|')
 title("Reflection coefficient vs. Frequency")
 legend('First Layer', 'Second Layer', 'Third Layer', 'Fourth Layer')
 
-figure(5); clf;
+% figure(5); clf;
+% 
+% for i = 1:4
+%     time_domain = ifft(abs(R_vec(i,:)));
+%     plot(abs(time_domain));
+%     hold on;
+% end
+% 
+% title('fft of data');
+% xlabel("Time")
+% legend('First Layer', 'Second Layer', 'Third Layer', 'Fourth Layer')
+% hold off;
+% 
+% figure(6); clf;
 
-for i = 1:4
-    time_domain = ifft(abs(R_vec(i,:)));
-    plot(abs(time_domain));
-    hold on;
-end
-
-title('fft of data');
-xlabel("Time")
-legend('First Layer', 'Second Layer', 'Third Layer', 'Fourth Layer')
-hold off;
-
-figure(6); clf;
-
-for i = 1:4
-    time_domain = ifft(abs(R_vec(i,:)));
-    plot(abs(time_domain(1:50)));
-    hold on;
-end
-
-title('fft of data (first 50 points)');
-xlabel("Time")
-legend('First Layer', 'Second Layer', 'Third Layer', 'Fourth Layer')
-hold off;
+% for i = 1:4
+%     time_domain = ifft(abs(R_vec(i,:)));
+%     plot(abs(time_domain(1:50)));
+%     hold on;
+% end
+% 
+% title('fft of data (first 50 points)');
+% xlabel("Time")
+% legend('First Layer', 'Second Layer', 'Third Layer', 'Fourth Layer')
+% hold off;
 
 % create plot of angle vs. frequency
 freqs = 10:10:1000;
@@ -123,6 +126,7 @@ for freq_index = 1:length(freqs)
     end
 end
 
+% are the axis labeled correctly?
 [X,Y] = meshgrid(freqs, angle_arr);
 figure(7); clf;
 surf(X, Y, abs_R');
@@ -131,12 +135,10 @@ xlabel('Frequency')
 ylabel('Angle')
 
 figure(8); clf;
-imagesc([0 1000], [0 pi/2],abs_R);
+imagesc([0 pi/2],[0 1000], abs_R);
 ylabel('Frequency')
 xlabel('Angle')
 title('|R|')
-x = [5 8];
-y = [3 6];
 colorbar;
 
 figure(9); clf;
@@ -146,7 +148,7 @@ xlabel('Frequency')
 ylabel('Angle')
 
 figure(10); clf;
-imagesc(phase_R);
+imagesc([0 pi/2],[0 1000],phase_R);
 title('Phase of R')
 ylabel('Frequency')
 xlabel('Angle')
@@ -174,9 +176,13 @@ end
 
 figure(11); clf; 
 plot(angle_arr, abs_R);
+title("|R| for 2 kHz")
+xlabel("angle")
 
 figure(12); clf;
 plot(angle_arr, bottom_loss(R_arr));
+title("Bottom loss for 2 kHz")
+xlabel("angle")
 
 angle_arr = 0:pi/200:pi/2;
 freq_arr = 0:20:2000;
@@ -190,25 +196,42 @@ for freq_index = 1:length(freq_arr)
     end
 end
 
+% why does it look like x and y axis are flipped?
 [X,Y] = meshgrid(freq_arr, angle_arr);
 figure(13); clf;
-surf(X, Y, abs(R_vals));
+surf(X, Y, abs(R_vals)');
 title('|R|')
 xlabel('Frequency')
 ylabel('Angle')
 
 figure(14); clf;
-imagesc(abs(R_vals));
-xlabel('Frequency')
-ylabel('Angle')
+imagesc([0 pi/2], [0 2000], abs(R_vals));
+xlabel('Angle')
+ylabel('Frequency')
 title('|R|')
-x = [5 8];
-y = [3 6];
 colorbar;
 
 [X,Y] = meshgrid(freq_arr, angle_arr);
 figure(15); clf;
-surf(X, Y, bottom_loss(R_vals));
-title('|R|')
+surf(X, Y, bottom_loss(R_vals)');
+title('Bottom Loss')
 xlabel('Frequency')
 ylabel('Angle')
+
+figure(14); clf;
+imagesc([0 pi/2], [0 2000], bottom_loss(R_vals));
+xlabel('Angle')
+ylabel('Frequency')
+title('Bottom loss')
+colorbar;
+
+
+% fourier transoform for arrival times
+R_by_freq = R_vals(:,20);
+R_by_freq(1) = 0;
+inverse_fft = ifft(abs(R_by_freq));
+figure(15); clf;
+plot(abs(inverse_fft))
+xlabel('Time')
+ylabel('|R|')
+title('Inverse fourier transoform of R(frequency) in 3 layered medium')
