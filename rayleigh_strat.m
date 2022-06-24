@@ -16,13 +16,17 @@ h = padarray(h, 1);
 
 m_arr = zeros(num_layers - 1,1); n_arr = zeros(num_layers - 1,1);
 R_nat_arr = zeros(num_layers - 1, 1);
-k_arr = freq./c;
 
-theta_arr = zeros(num_layers-1);
+%ensure that frequency gets transformed into angular frequency
+k_arr = 2*pi*freq./c;
+
+theta_arr = zeros(num_layers,1);
 theta_arr(1) = theta;
+% by snells law, all k sin(theta) = k_1 sin(theta_1)
+snell_const = k_arr(1) * sin(theta);
 
-for i = 2:num_layers-1
-    theta_arr(i) = asin(k_arr(i-1) * sin(theta_arr(i-1)) /k_arr(i));
+for i = 2:num_layers
+    theta_arr(i) = asin(snell_const/ k_arr(i) );
 end
 
 for i = 1:num_layers-1
@@ -38,13 +42,13 @@ R_prime = zeros(num_layers - 1, 1);
 
 R_prime(num_layers-1) = R_nat_arr(num_layers-1);
 
-imag = 0 + 1i;
 
 for i = num_layers-2:-1:1
-    R_prime(i) = (R_nat_arr(i) + R_prime(i + 1) * ...
-        exp(2 * imag * k_arr(i) * h(i) * theta_arr(i + 1)))...
-    /(1 + R_nat_arr(i) * R_prime(i+1) * exp(2 * imag * k_arr(i)...
-    * h(i) * theta_arr(i + 1)));
+    phase = exp(2 * 1i * k_arr(i + 1) * h(i + 1) * cos(theta_arr(i + 1)));
+    numerator = R_nat_arr(i) + R_prime(i + 1) * phase;
+    denominator = 1 + R_nat_arr(i) * R_prime(i + 1) * phase;
+    R_prime(i) = numerator/denominator;
+    
 end
 
 R = R_prime;
