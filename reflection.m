@@ -25,6 +25,7 @@ plot(theta, angle(y));
 xlabel('0 < \theta < \pi/2')
 ylabel('|R|')
 title("Water-Air Interface")
+saveas(gcf,'Water-Air Interface.png')
 %% 
 % Reflection from a lower velocity, more dense half space (the water bottom 
 % interface: model 1)
@@ -41,6 +42,7 @@ plot(theta, abs(y),'LineWidth',2);
 xlabel('0 < \theta < \pi/2')
 ylabel('|R|')
 title("Water-Bottom Interface Model 1")
+saveas(gcf,'Water-Bottom Interface Model 1.png')
 %% 
 % Reflection from a Higher Velocity, More Dense Half-Space (the water bottom 
 % interface: model 2)
@@ -57,6 +59,7 @@ plot(theta, abs(y),'LineWidth',2)
 xlabel('0 < \theta < \pi/2')
 ylabel('|R|')
 title("Water-Bottom Interface Model 2")
+saveas(gcf,'Water-Bottom Interface Model 2.png')
 %%
 %test with random coefficients
 rho = [1;1.5;1.7;1.9;2];
@@ -84,7 +87,7 @@ xlabel("\omega (Hz)")
 ylabel('|R|')
 title("Reflection coefficient vs. Frequency")
 legend('First Layer', 'Second Layer', 'Third Layer', 'Fourth Layer')
-
+saveas(gcf,'Figure 4.png')
 % figure(5); clf;
 % 
 % for i = 1:4
@@ -133,6 +136,7 @@ surf(X, Y, abs_R');
 title('|R|')
 xlabel('Frequency')
 ylabel('Angle')
+saveas(gcf,'Figure 7.png')
 
 figure(8); clf;
 imagesc([0 pi/2],[0 1000], abs_R);
@@ -140,12 +144,14 @@ ylabel('Frequency')
 xlabel('Angle')
 title('|R|')
 colorbar;
+saveas(gcf, 'Figure 8.png')
 
 figure(9); clf;
 surf(X, Y, phase_R');
 title('Phase of R')
 xlabel('Frequency')
 ylabel('Angle')
+saveas(gcf, 'Figure 9.png')
 
 figure(10); clf;
 imagesc([0 pi/2],[0 1000],phase_R);
@@ -153,6 +159,7 @@ title('Phase of R')
 ylabel('Frequency')
 xlabel('Angle')
 colorbar;
+saveas(gcf, 'Figure 10.png')
 
 %% 
 % try and get the same plots as page 49 of CoA
@@ -178,11 +185,13 @@ figure(11); clf;
 plot(angle_arr, abs_R);
 title("|R| for 2 kHz")
 xlabel("angle")
+saveas(gcf, 'Figure 11.png')
 
 figure(12); clf;
 plot(angle_arr, bottom_loss(R_arr));
 title("Bottom loss for 2 kHz")
 xlabel("angle")
+saveas(gcf, 'Figure 12.png')
 
 angle_arr = 0:pi/200:pi/2;
 freq_arr = 0:20:2000;
@@ -203,6 +212,7 @@ surf(X, Y, abs(R_vals)');
 title('|R|')
 xlabel('Frequency')
 ylabel('Angle')
+saveas(gcf, 'Figure 13.png')
 
 figure(14); clf;
 imagesc([0 pi/2], [0 2000], abs(R_vals));
@@ -210,6 +220,7 @@ xlabel('Angle')
 ylabel('Frequency')
 title('|R|')
 colorbar;
+saveas(gcf, 'Figure 14.png')
 
 [X,Y] = meshgrid(freq_arr, angle_arr);
 figure(15); clf;
@@ -217,21 +228,24 @@ surf(X, Y, bottom_loss(R_vals)');
 title('Bottom Loss')
 xlabel('Frequency')
 ylabel('Angle')
+saveas(gcf, 'Figure 15.png')
 
-figure(14); clf;
+figure(16); clf;
 imagesc([0 pi/2], [0 2000], bottom_loss(R_vals));
 xlabel('Angle')
 ylabel('Frequency')
 title('Bottom loss')
 colorbar;
+saveas(gcf, 'Figure 16.png')
 
 
 % fourier transoform for arrival times
 R_by_freq = R_vals(:,20);
 R_by_freq(1) = 0;
 inverse_fft = ifft(abs(R_by_freq));
-figure(15); clf;
+figure(17); clf;
 plot(abs(inverse_fft))
 xlabel('Time')
 ylabel('|R|')
-title('Inverse fourier transoform of R(frequency) in 3 layered medium')
+title('Inverse fourier transform of R(frequency) in 3 layered medium')
+saveas(gcf, 'Figure 17.png')
