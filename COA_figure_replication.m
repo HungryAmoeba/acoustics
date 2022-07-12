@@ -1,6 +1,8 @@
 %% 
 % try and get the same plots as page 49 of CoA
 
+path(path, '/Users/charlesxu/Documents/WHOI_2022/reflection_coeff/subroutines')
+
 c = [1500, 1550, 1800];
 rho = [1000, 1500, 2000];
 h = 2;
