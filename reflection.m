@@ -253,16 +253,24 @@ title('Bottom loss')
 colorbar;
 saveas(gcf, 'Figure 16.png')
 
+figure(18);
 
 % fourier transoform for arrival times
 R_by_freq = R_vals(:,20);
 R_by_freq(1) = 0;
-inverse_fft = ifft(abs(R_by_freq));
+
+plot(abs(R_by_freq));
+inverse_fft = ifft(abs(R_by_freq), length(R_by_freq) * 4);
+fft_of_signal = fft((R_by_freq), length(R_by_freq) * 5);
 figure(17); clf;
 plot(abs(inverse_fft))
-xlabel('Time')
+xlabel(' "Time" ')
 ylabel('|R|')
 title('Inverse fourier transform of R(frequency) in 3 layered medium')
+
+figure(19); clf;
+plot(abs(fft_of_signal));
+title("FFT of R(frequency) in 3 layered medium)");
 % saveas(gcf, 'Figure 17.png')
 
 %% 
