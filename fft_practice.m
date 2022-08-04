@@ -1,4 +1,90 @@
 %%% BOXCAR SIGNAL
+close all; clear all;
+path(path, '/Users/charlesxu/Documents/WHOI_2022/reflection_coeff/subroutines')
+
+% boxcar in the time domain -> frequency domain -> time domain
+fs = 1000;
+n = 20000;
+T = n/fs;
+df = 1/(n/fs);
+t = [0:n-1]/fs; 
+f = [0:ceil(n/2)-1 ceil(-n/2):-1]*df;
+
+%%  frequency to time domain
+
+f0 = 100;
+f1 = 200;
+IDF = find(f>=100 & f<=200);
+
+spect = zeros(size(f)); 
+
+% define the medium properties
+
+% rho = [1;1.5;1.7;1.9;2];
+% c = [1500; 1500; 1575; 1650; 1800];
+% h = [200;300;800];
+
+c = [1500, 1700,  1800];
+rho = [1000, 1500, 2000];
+h = 600;
+
+%just pick some random angle for now
+angle_arr = 0:pi/10:pi/2;
+
+%pick some random x_0
+x0_arr = 100; %0:100:200;
+counter = 1;
+for angle = angle_arr
+    for x0 = x0_arr
+        for idf = IDF
+
+            freq = f(idf);    
+
+            % Ref Coef Computation at freq
+            Refl = rayleigh_strat(rho, c, h, angle, freq);
+            Refl = Refl(1);
+            k = 2*pi*freq/c(1);
+
+            % multiply by exp(ikx_0) to get p_r
+            spect(idf) = Refl*exp(1i*k*x0);
+
+            idf_neg = find(f == -freq);
+
+            spect(idf_neg) = conj(spect(idf)); 
+        end
+        Ref_time = ifft(spect);
+%         figure(2 * counter); clf;
+%         plot(f, abs(spect))
+%         title(x0)
+        figure(2 * counter + 1); clf;
+        plot(t, abs(fftshift(Ref_time)))
+        title("x0 = " + x0 + ", angle = " + angle * 180/pi)
+
+        counter = counter + 1;
+    end
+end
+
+% figure(1); clf;
+% plot(f, spect)
+% figure(2); clf;
+% Ref_time = ifft(spect);
+% plot(fftshift(Ref_time))
+
+%% test a chirp
+
+y = chirp(t,10,15,20);
+fft_y = fft(y);
+figure(82); clf
+ax(1) = subplot(211);
+plot(f,abs(fft_y)); xlabel('freq (hz)'); ylabel('magnitude')
+ax(2) = subplot(212);
+
+plot(f,angle(fft_y)/pi*180); xlabel('freq (hz)'); ylabel('phase (deg)')
+
+linkaxes(ax,'x')
+%% 
+
+%%% BOXCAR SIGNAL
 % boxcar in the time domain -> frequency domain -> time domain
 
 fs = 1000;
