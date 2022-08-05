@@ -4,12 +4,12 @@ path(path, '/Users/charlesxu/Documents/WHOI_2022/reflection_coeff/subroutines')
 
 % boxcar in the time domain -> frequency domain -> time domain
 fs = 1000;
-n = 20000;
+n = 2000;
 T = n/fs;
 df = 1/(n/fs);
 t = [0:n-1]/fs; 
 f = [0:ceil(n/2)-1 ceil(-n/2):-1]*df;
-
+han_window = hanning(n);
 %%  frequency to time domain
 
 f0 = 100;
@@ -22,53 +22,54 @@ spect = zeros(size(f));
 
 % rho = [1;1.5;1.7;1.9;2];
 % c = [1500; 1500; 1575; 1650; 1800];
-% h = [200;300;800];
+% h = [200;300;80];
 
 c = [1500, 1700,  1800];
 rho = [1000, 1500, 2000];
-h = 600;
+h_arr = 5:160:310;
 
 %just pick some random angle for now
-angle_arr = 0:pi/10:pi/2;
+angle_arr = 3 * pi/10;%0:pi/10:pi/2;
 
 %pick some random x_0
 x0_arr = 100; %0:100:200;
 counter = 1;
-for angle = angle_arr
-    for x0 = x0_arr
-        for idf = IDF
 
-            freq = f(idf);    
+%Refl_arr = zeros(length(angle_arr), length(IDF));
+for ind = 1:length(h_arr)
+    for angle = angle_arr
+        for x0 = x0_arr
+            for idf = IDF
+                h = h_arr(ind);
+                freq = f(idf);    
 
-            % Ref Coef Computation at freq
-            Refl = rayleigh_strat(rho, c, h, angle, freq);
-            Refl = Refl(1);
-            k = 2*pi*freq/c(1);
+                % Ref Coef Computation at freq
+                Refl = rayleigh_strat(rho, c, h, angle, freq);
+                Refl = Refl(1);
+                k = 2*pi*freq/c(1);
 
-            % multiply by exp(ikx_0) to get p_r
-            spect(idf) = Refl*exp(1i*k*x0);
+                % multiply by exp(ikx_0) to get p_r
+                spect(idf) = Refl*exp(1i*k*x0);
 
-            idf_neg = find(f == -freq);
+                idf_neg = find(f == -freq);
 
-            spect(idf_neg) = conj(spect(idf)); 
+                spect(idf_neg) = conj(spect(idf)); 
+            end
+            windowed_spect = spect .*han_window;
+            Ref_time = fft(windowed_spect);
+    %         figure(2 * counter); clf;
+    %         plot(f, abs(spect))
+    %         title(x0)
+            %figure(2* ind + 2 * counter + 1); clf;
+            figure(counter); 
+            plot(t, abs(fftshift(Ref_time)))
+            title("x0 = " + x0 + ", angle = " + angle * 180/pi + ", h = " + h)
+            %xlim([9.8 10.6])
+            counter = counter + 1;
+            %hold on;
         end
-        Ref_time = ifft(spect);
-%         figure(2 * counter); clf;
-%         plot(f, abs(spect))
-%         title(x0)
-        figure(2 * counter + 1); clf;
-        plot(t, abs(fftshift(Ref_time)))
-        title("x0 = " + x0 + ", angle = " + angle * 180/pi)
-
-        counter = counter + 1;
     end
 end
-
-% figure(1); clf;
-% plot(f, spect)
-% figure(2); clf;
-% Ref_time = ifft(spect);
-% plot(fftshift(Ref_time))
 
 %% test a chirp
 
