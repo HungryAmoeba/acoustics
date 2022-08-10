@@ -1,32 +1,71 @@
 %%% BOXCAR SIGNAL
+
+% do the check with the point source in homogeneous media
+
+% zero order hankel function of the first kind 
+
 close all; clear all;
 path(path, '/Users/charlesxu/Documents/WHOI_2022/reflection_coeff/subroutines')
 
 % boxcar in the time domain -> frequency domain -> time domain
 fs = 1000;
-n = 2000;
+n = 20000;
 T = n/fs;
 df = 1/(n/fs);
 t = [0:n-1]/fs; 
 f = [0:ceil(n/2)-1 ceil(-n/2):-1]*df;
-han_window = hanning(n);
+
+% source function as ricker wavelet 
+
+% convolve with data
+% sometimes impulsive sources, if speakers then any arbitrary func
+
+
+
 %%  frequency to time domain
 
+mode = 3; % 1 for 5 layered, 2 for tunneling, 3 for 3 layered
+
 f0 = 100;
-f1 = 200;
-IDF = find(f>=100 & f<=200);
+f1 = 300;
+IDF = find(f>=f0 & f<=f1);
 
 spect = zeros(size(f)); 
+window_1_endpoints = find(f==f0 | f == f1);
+window_2_endpoints = find(f == -f0 | f == -f1);
+window = ones(size(f));
+window(window_1_endpoints(1):window_1_endpoints(2)) = tukeywin(diff(window_1_endpoints) + 1, 1);
+window(window_2_endpoints(1):window_2_endpoints(2)) = tukeywin(diff(window_2_endpoints) + 1, 1);
 
 % define the medium properties
 
-% rho = [1;1.5;1.7;1.9;2];
-% c = [1500; 1500; 1575; 1650; 1800];
-% h = [200;300;80];
+% Attenuation by introducing complex sound speed
 
-c = [1500, 1700,  1800];
-rho = [1000, 1500, 2000];
-h_arr = 5:160:310;
+% alpha = 20 * log10(exp(.3))./ (c/ (2 * pi * freq) )
+if mode == 1
+    rho = [1;1.5;1.7;1.9;2];
+    %c = [1500 - 2i; 1500 - 1i; 1575- 3i; 1650- 4i; 1800- 1i];
+    c = [1500; 1500; 1575; 1650; 1800];
+    h = [200;300;80];
+end
+
+if mode == 2
+    %tunneling
+    c_0 = 1000; c_1 = 2000;
+    rho_0 = 1; rho_1 = 1.5;
+
+    c = [c_0, c_1, c_0]; rho = [rho_0, rho_1, rho_0];
+
+    h=10;
+end
+
+if mode == 3
+    c = [1500, 1700,  1800];
+    rho = [1000, 1500, 2000];
+    h_arr = 5:160:310;
+    h = 200;
+end
+
 
 %just pick some random angle for now
 angle_arr = 3 * pi/10;%0:pi/10:pi/2;
@@ -36,11 +75,11 @@ x0_arr = 100; %0:100:200;
 counter = 1;
 
 %Refl_arr = zeros(length(angle_arr), length(IDF));
-for ind = 1:length(h_arr)
+for ind = 1%:length(h_arr)
     for angle = angle_arr
         for x0 = x0_arr
             for idf = IDF
-                h = h_arr(ind);
+                %h = h_arr(ind);
                 freq = f(idf);    
 
                 % Ref Coef Computation at freq
@@ -55,16 +94,16 @@ for ind = 1:length(h_arr)
 
                 spect(idf_neg) = conj(spect(idf)); 
             end
-            windowed_spect = spect .*han_window;
+            windowed_spect = spect .* window;
             Ref_time = fft(windowed_spect);
-    %         figure(2 * counter); clf;
-    %         plot(f, abs(spect))
-    %         title(x0)
-            %figure(2* ind + 2 * counter + 1); clf;
-            figure(counter); 
-            plot(t, abs(fftshift(Ref_time)))
+            figure(2 * counter); clf;
+            plot(f, real(windowed_spect))
+            title(x0)
+            figure(2* ind + 2 * counter + 1); clf;
+            %figure(counter); 
+            plot(t-max(t)/2, abs(fftshift(Ref_time)))
             title("x0 = " + x0 + ", angle = " + angle * 180/pi + ", h = " + h)
-            %xlim([9.8 10.6])
+            xlim([0 1.4])
             counter = counter + 1;
             %hold on;
         end

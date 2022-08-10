@@ -1,13 +1,13 @@
 % Experiment with some greens functions
 
 freq = 200; c = 1500;
-k = 2*pi*freq/c;
+k = 2*pi*freq/c * (1 + .001i);
 
 %random inputs for now
 
 h = 10; z = h/10; z_0 = h/2;
 
-r_arr = 0:1:1000;
+r_arr = 0:.1:1000;
 
 p_arr = zeros(size(r_arr));
 for ind = 1:length(r_arr)
