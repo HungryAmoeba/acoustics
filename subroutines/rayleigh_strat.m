@@ -33,6 +33,7 @@ for i = 1:num_layers-1
    m_arr(i) = rho(i+1)/rho(i);
    n_arr(i) = c(i)/c(i+1);
    R_nat_arr(i) = rayleigh(m_arr(i),n_arr(i), theta_arr(i));
+   %R_nat_arr(i) = rayleigh_wavenumber(k_x, m_arr(i), k_i, k_(i+1) )
 end
 
 
