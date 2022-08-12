@@ -8,9 +8,9 @@ function R = rayleigh_wavenumber_strat(k_x, rho_arr, c_arr, beta, h, freq)
 % layer
 
 assert(length(rho_arr) == length(c_arr))
-assert(length(h) == length(rho_arr - 2))
+assert(length(h) == length(rho_arr) - 2)
 
-num_layers = length(rho);
+num_layers = length(rho_arr);
 
 h = padarray(h, 1);
 
@@ -26,7 +26,7 @@ alpha = beta./lambda * log(10)/20; % imaginary part of k
 k_arr = k_arr + 1i .* alpha;
 
 for i = 1:num_layers-1
-   m_arr(i) = rho(i+1)/rho(i);
+   m_arr(i) = rho_arr(i+1)/rho_arr(i);
    R_nat_arr(i) = rayleigh_wavenumber(k_x, m_arr(i), k_arr(i), k_arr(i + 1));
    %R_nat_arr(i) = rayleigh_wavenumber(k_x, m_arr(i), k_i, k_(i+1) )
 end
