@@ -1,3 +1,4 @@
+path(path, '/Users/charlesxu/Documents/WHOI_2022/reflection_coeff/subroutines')
 
 r = 100;
 z = 20;
@@ -7,6 +8,7 @@ c = [1500, 1700,  1800];
 rho = [1000, 1500, 2000];
 freq = 300;
 beta = .3;
+h=15;
 
 k = 2 * pi * freq/1500 + .02i;
 
@@ -25,7 +27,7 @@ sum = 0;
 for k_x = kx
     sum = sum + fun(k_x) * .01;
 end
-sum
+print(sum)
 
 
 %q = integral(fun,-Inf,Inf)

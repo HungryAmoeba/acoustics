@@ -75,7 +75,7 @@ angle_arr = 3 * pi/10;%0:pi/10:pi/2;
 
 %pick some random x_0
 x0_arr = 100; %0:100:200;
-counter = 1;
+counter = 1 ;
 
 %Refl_arr = zeros(length(angle_arr), length(IDF));
 for ind = 1%:length(h_arr)
@@ -87,12 +87,12 @@ for ind = 1%:length(h_arr)
                 
                 % if attenuation is desired
                 lambda = c/(freq);
-                beta = .1; % typical is .1 - .3
+                beta = [0,0,0]; % typical is .1 - .5
                 alpha = beta./lambda * log(10)/20; % imaginary part of k
                 k = 2*pi*freq./c + 1i .* alpha;
                 
                 % Ref Coef Computation at freq
-                Refl = rayleigh_strat(rho, c, h, angle, freq);
+                Refl = rayleigh_strat(rho, c, h, angle, freq,k); %rayleigh_strat(rho,c,h,angle,freq) if no attenuation
                 Refl = Refl(1);
                 k = 2*pi*freq/c(1);
 
@@ -111,7 +111,8 @@ for ind = 1%:length(h_arr)
             figure(2* ind + 2 * counter + 1); clf;
             %figure(counter); 
             plot(t-max(t)/2, abs(fftshift(Ref_time)))
-            title("x0 = " + x0 + ", angle = " + angle * 180/pi + ", h = " + h)
+            title("x0 = " + x0 + ", angle = " + angle * 180/pi + ", h = " + h + ", beta = [" + beta(1) +"," + beta(2) + "," + beta(3) + "]")
+            %fix the title later lol
             xlim([0 1.4])
             counter = counter + 1;
             %hold on;

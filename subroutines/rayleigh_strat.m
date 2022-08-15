@@ -1,4 +1,4 @@
-function R = rayleigh_strat(rho, c, h, theta, freq)
+function R = rayleigh_strat(rho, c, h, theta, freq, k_arr)
 
 %This function calculates the reflection coefficient 
 %for an arbitrarily horizontally stratified substrate
@@ -18,7 +18,13 @@ m_arr = zeros(num_layers - 1,1); n_arr = zeros(num_layers - 1,1);
 R_nat_arr = zeros(num_layers - 1, 1);
 
 %ensure that frequency gets transformed into angular frequency
-k_arr = 2*pi*freq./c;
+
+
+if ~exist('k_arr','var')
+ % k_arr parameter does not exist, so default it to something
+  k_arr = 2*pi*freq./c;
+end
+
 
 theta_arr = zeros(num_layers,1);
 theta_arr(1) = theta;
@@ -32,7 +38,15 @@ end
 for i = 1:num_layers-1
    m_arr(i) = rho(i+1)/rho(i);
    n_arr(i) = c(i)/c(i+1);
-   R_nat_arr(i) = rayleigh(m_arr(i),n_arr(i), theta_arr(i));
+   if ~exist('k_arr', 'var')
+    % k_arr is not given, don't assume attenuation
+    R_nat_arr(i) = rayleigh(m_arr(i),n_arr(i), theta_arr(i));
+   end
+   if exist('k_arr', 'var')
+    % k_arr is given, assume attenuation
+    R_nat_arr(i) = rayleigh(m_arr(i), n_arr(i), theta_arr(i), k_arr(i:i+1));
+   end
+   
    %R_nat_arr(i) = rayleigh_wavenumber(k_x, m_arr(i), k_i, k_(i+1) )
 end
 
