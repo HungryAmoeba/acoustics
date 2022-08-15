@@ -89,6 +89,7 @@ for ind = 1%:length(h_arr)
                 lambda = c/(freq);
                 beta = .1; % typical is .1 - .3
                 alpha = beta./lambda * log(10)/20; % imaginary part of k
+                k = 2*pi*freq./c + 1i .* alpha;
                 
                 % Ref Coef Computation at freq
                 Refl = rayleigh_strat(rho, c, h, angle, freq);
