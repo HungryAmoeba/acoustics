@@ -11,7 +11,7 @@ lambda = c/(freq);
 alpha = beta./lambda * log(10)/20;
 h=15;
 
-k_arr = 2*pi*freq./c + alpha;
+k_arr = 2*pi*freq./c + 1i * alpha;
 k = k_arr(1);
 
 fun = @(k_x) 1/2 * 1i./sqrt(k ^2 - k_x .^2) .* ...
