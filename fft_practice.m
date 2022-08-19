@@ -24,7 +24,7 @@ f = [0:ceil(n/2)-1 ceil(-n/2):-1]*df;
 
 %%  frequency to time domain
 
-mode = 3; % 1 for 5 layered, 2 for tunneling, 3 for 3 layered
+mode = 2; % 1 for 5 layered, 2 for tunneling, 3 for 3 layered
 
 f0 = 100;
 f1 = 300;
@@ -71,11 +71,11 @@ end
 
 
 %just pick some random angle for now
-angle_arr = 3 * pi/10;%0:pi/10:pi/2;
+angle_arr = atan(2);%0:pi/10:pi/2;
 
 %pick some random x_0
 x0_arr = 100; %0:100:200;
-counter = 1 ;
+counter = 100 ;
 
 %Refl_arr = zeros(length(angle_arr), length(IDF));
 for ind = 1%:length(h_arr)
@@ -87,7 +87,7 @@ for ind = 1%:length(h_arr)
                 
                 % if attenuation is desired
                 lambda = c/(freq);
-                beta = [0,0,0]; % typical is .1 - .5
+                beta = [.0001,.1, .2]; % typical is .1 - .5
                 alpha = beta./lambda * log(10)/20; % imaginary part of k
                 k = 2*pi*freq./c + 1i .* alpha;
                 
