@@ -191,8 +191,8 @@ for d=1
     window_1_endpoints = find(f==f0 | f == f1);
     window_2_endpoints = find(f == -f0 | f == -f1);
     window = ones(size(f));
-    window(window_1_endpoints(1):window_1_endpoints(2)) = tukeywin(diff(window_1_endpoints) + 1, .5);
-    window(window_2_endpoints(1):window_2_endpoints(2)) = tukeywin(diff(window_2_endpoints) + 1, .5);
+    window(window_1_endpoints(1):window_1_endpoints(2)) = tukeywin(diff(window_1_endpoints) + 1, 1);
+    window(window_2_endpoints(1):window_2_endpoints(2)) = tukeywin(diff(window_2_endpoints) + 1, 1);
 end
 
 %define medium properties
