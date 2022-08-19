@@ -196,12 +196,12 @@ for d=1
 end
 
 %define medium properties
-mode = 1;
+mode = 3;
 if mode == 1
-    rho = [1;1.5;1.7;1.9;2];
+    rho = [1,1.5,1.7,1.9,2];
     %c = [1500 - 2i; 1500 - 1i; 1575- 3i; 1650- 4i; 1800- 1i];
-    c = [1500; 1500; 1575; 1650; 1800];
-    h = [200;300;80];
+    c = [1500, 1500, 1575, 1650, 1800];
+    h = [200,300,80];
     beta = [.0001, .1, .15, .2, .1];
 end
 
@@ -236,11 +236,14 @@ for idf = IDF
     %h = h_arr(ind);
     freq = f(idf); 
     spect_spherical(idf) = p_hankel(r, z, z_0, freq, c, rho, h, beta);
-    lambda = c/(freq);
+    lambda = c./(freq);
+    % make sure they are going in the same direction!!!
     alpha = beta./lambda * log(10)/20; % imaginary part of k
     k = 2*pi*freq./c + 1i .* alpha;
     
-    Refl = rayleigh_strat(rho, c, h, theta, freq,k); %rayleigh_strat(rho,c,h,angle,freq) if no attenuation
+    %Refl = rayleigh_strat(rho, c, h, theta, freq,k); %rayleigh_strat(rho,c,h,angle,freq) if no attenuation
+    kx = k .* cos(theta);
+    Refl = reflection_coeff(kx, rho, k, h);
     Refl = Refl(1);
 
     spect_plane(idf) = Refl*exp(1i*k(1)*r);
@@ -258,14 +261,14 @@ Ref_time = fft(windowed_spect);
 figure(fig_counter); clf;
 fig_counter = fig_counter + 1;
 plot(f, real(windowed_spect))
-title("Real part of windowed spectrum spherical")
+title("Real part of windowed spectrum spherical, r = " + r)
 xlabel("freq")
 ylabel("p(freq)")
 figure(fig_counter); clf;
 fig_counter = fig_counter + 1;
 %figure(counter); 
 plot(t-max(t)/2, abs(fftshift(Ref_time)))
-title("Time domain solution spherical")
+title("Time domain solution spherical, r = " + r)
 xlabel("t")
 ylabel("p(t)")
 xlim([0 1.4])
@@ -276,13 +279,13 @@ Ref_time = fft(windowed_spect);
 figure(fig_counter); clf;
 fig_counter = fig_counter + 1;
 plot(f, real(windowed_spect))
-title("Real part of windowed spectrum plane")
+title("Real part of windowed spectrum plane, r = " + r)
 xlabel("freq")
 ylabel("p(freq)")
 figure(fig_counter); clf;
 fig_counter = fig_counter + 1;
 plot(t-max(t)/2, abs(fftshift(Ref_time)))
-title("Time domain solution plane")
+title("Time domain solution plane, r = " + r)
 xlabel("t")
 ylabel("p(t)")
 xlim([0 1.4])
